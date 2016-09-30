@@ -1,6 +1,7 @@
 .gradle/*
 .idea/*
 gradle/*
+target/*
 build.gradle
 gradlew
 gradlew.bat
