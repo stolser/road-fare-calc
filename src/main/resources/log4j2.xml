@@ -12,5 +12,8 @@
         <Root level="error">
             <AppenderRef ref="Console" />
         </Root>
+        <Logger name="com.stolser" level="debug">
+            <AppenderRef ref="Console" />
+        </Logger>
     </Loggers>
 </Configuration>

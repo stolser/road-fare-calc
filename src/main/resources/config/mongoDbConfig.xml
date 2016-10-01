@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/data/mongo
+       http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+    <mongo:repositories base-package="com.stolser.repository"/>
+    <mongo:mongo-client id="mongoClient" host="${mongo.host}" port="${mongo.port}">
+        <mongo:client-options
+                connections-per-host="${mongo.connectionsPerHost}"
+                connect-timeout="${mongo.connectTimeout}"
+                max-wait-time="${mongo.maxWaitTime}"/>
+    </mongo:mongo-client>
+    <!--<bean id="mongoClient" class="com.mongodb.MongoClient">-->
+    <!--<constructor-arg value="localhost"/>-->
+    <!--<constructor-arg value="27017"/>-->
+    <!--</bean>-->
+
+</beans>

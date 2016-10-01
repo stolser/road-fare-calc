@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--Users-->
+    <bean class="com.stolser.entity.User">
+        <constructor-arg value="${entity.user1.firstName}"/>
+        <constructor-arg value="${entity.user1.secondName}"/>
+        <constructor-arg value="${system.email}"/>
+    </bean>
+    <bean class="com.stolser.entity.User">
+        <constructor-arg value="${entity.user2.firstName}"/>
+        <constructor-arg value="${entity.user2.secondName}"/>
+        <constructor-arg value="${system.email}"/>
+    </bean>
+    <bean class="com.stolser.entity.User">
+        <constructor-arg value="${entity.user3.firstName}"/>
+        <constructor-arg value="${entity.user3.secondName}"/>
+        <constructor-arg value="${system.email}"/>
+    </bean>
+    <bean class="com.stolser.entity.User">
+        <constructor-arg value="${entity.user4.firstName}"/>
+        <constructor-arg value="${entity.user4.secondName}"/>
+        <constructor-arg value="${system.email}"/>
+    </bean>
+    <!--End of Users-->
+
+    <!--TrafficPosts-->
+    <bean id="trPost1" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="tr-post-1"/>
+        <constructor-arg name="name" value="Kiev"/>
+        <property name="roads">
+            <list>
+                <ref bean="road1"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost2" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="tr-post-2"/>
+        <constructor-arg name="name" value="Vinnitsa"/>
+        <property name="roads">
+            <list>
+                <ref bean="road1"/>
+            </list>
+        </property>
+    </bean>
+    <!--End of TrafficPosts-->
+
+    <!--Roads-->
+    <bean id="road1" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="road-A1"/>
+        <!--<constructor-arg name="trafficPosts">-->
+            <!--<list>-->
+                <!--<ref bean="trPost1"/>-->
+                <!--<ref bean="trPost2"/>-->
+            <!--</list>-->
+        <!--</constructor-arg>-->
+        <constructor-arg name="length" value="150"/>
+        <constructor-arg name="fare" value="50"/>
+        <!--<property name="trafficPosts">-->
+            <!--<list>-->
+                <!--<ref bean="trPost1"/>-->
+                <!--<ref bean="trPost2"/>-->
+            <!--</list>-->
+        <!--</property>-->
+    </bean>
+    <!--End of Roads-->
+</beans>

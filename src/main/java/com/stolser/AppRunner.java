@@ -2,9 +2,11 @@ package com.stolser;
 
 import static org.springframework.data.mongodb.core.query.Criteria.*;
 
-import com.stolser.entity.Car;
-import com.stolser.entity.TrafficPost;
-import com.stolser.entity.User;
+import com.stolser.entity.*;
+import com.stolser.repository.RoadRepository;
+import com.stolser.repository.TrafficPostRepository;
+import com.stolser.repository.UserRepository;
+import com.stolser.repository.UserTrackerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -18,19 +20,53 @@ import java.util.*;
 public class AppRunner {
     private static final String EMAIL = "stolser@ukr.net";
 
-    @Autowired
     private MongoTemplate template;
+    private UserRepository userRepo;
+    private RoadRepository roadRepo;
+    private TrafficPostRepository trafficPostRepo;
+    private UserTrackerRepository userTrackerRepo;
+
+    private List<User> usersPopulateDb;
+    private List<TrafficPost> postsPopulateDb;
+    private List<Road> roadsPopulateDb;
 
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("mainAppConfig.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("config/mainAppConfig.xml");
         AppRunner app = context.getBean("runner", AppRunner.class);
         System.out.printf("There are %d beans in the context.\n", context.getBeanDefinitionCount());
         Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
 
         app.setupDatabase();
-        app.updateTrafficPostCollection();
-        app.updateUsersCollection();
-        app.createVehicles();
+//        app.displayDataFromDb();
+
+
+//        app.updateTrafficPostCollection();
+//        app.createVehicles();
+    }
+
+    @Autowired
+    public AppRunner(MongoTemplate template, UserRepository userRepo, RoadRepository roadRepo,
+                     TrafficPostRepository trafficPostRepo, UserTrackerRepository userTrackerRepo) {
+        this.template = template;
+        this.userRepo = userRepo;
+        this.roadRepo = roadRepo;
+        this.trafficPostRepo = trafficPostRepo;
+        this.userTrackerRepo = userTrackerRepo;
+    }
+
+    @Autowired
+    public void setUsersPopulateDb(List<User> usersPopulateDb) {
+        this.usersPopulateDb = usersPopulateDb;
+    }
+
+    @Autowired
+    public void setRoadsPopulateDb(List<Road> roadsPopulateDb) {
+        this.roadsPopulateDb = roadsPopulateDb;
+    }
+
+    @Autowired
+    public void setPostsPopulateDb(List<TrafficPost> postsPopulateDb) {
+        this.postsPopulateDb = postsPopulateDb;
     }
 
     private void updateTrafficPostCollection() {
@@ -39,26 +75,34 @@ public class AppRunner {
 
     private void setupDatabase() {
         template.dropCollection(User.class);
+        template.dropCollection(Road.class);
+        template.dropCollection(TrafficPost.class);
+        template.dropCollection(UserTracker.class);
 
-        Index userSystemIdIndex = new Index("systemId", Sort.Direction.ASC).unique();
-        template.indexOps(User.class).ensureIndex(userSystemIdIndex);
+//        Index userSystemIdIndex = new Index("systemId", Sort.Direction.ASC).unique();
+//        Index roadSystemIdIndex = new Index("systemId", Sort.Direction.ASC).unique();
+//        Index trafficPostSystemIdIndex = new Index("systemId", Sort.Direction.ASC).unique();
+//        template.indexOps(User.class).dropAllIndexes();
+//        template.indexOps(Road.class).ensureIndex(roadSystemIdIndex);
+//        template.indexOps(User.class).ensureIndex(trafficPostSystemIdIndex);
+
+        System.out.println("Users into the DB:");
+        usersPopulateDb.stream().forEach(System.out::println);
+        userRepo.insert(usersPopulateDb);
+
+        System.out.println("TrafficPosts into the DB:");
+        postsPopulateDb.stream().forEach(System.out::println);
+//        trafficPostRepo.insert(postsPopulateDb);
+
+        System.out.println("Roads into the DB:");
+        roadsPopulateDb.stream().forEach(System.out::println);
+        roadRepo.insert(roadsPopulateDb);
 
     }
 
-    private void updateUsersCollection() {
-        User user1 = new User("Oleg", "Stoliarov", EMAIL);
-        User user2 = new User("Anton", "Koshel", EMAIL);
-        User user3 = new User("Bill", "Gates", EMAIL);
-        User user4 = new User("Joshua", "Bloch", EMAIL);
-        List<User> users = new ArrayList<>();
-        users.add(user1);
-        users.add(user2);
-        users.add(user3);
-        users.add(user4);
-        template.insertAll(users);
-        System.out.println("users: ");
-        template.find(new Query(), User.class).stream().forEach(System.out::println);
-
+    private void displayDataFromDb() {
+        System.out.println("Users from the DB:");
+        userRepo.findAll().stream().forEach(System.out::println);
     }
 
     private void createVehicles() {

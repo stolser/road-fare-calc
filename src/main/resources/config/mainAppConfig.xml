@@ -10,14 +10,15 @@
 
     <!--<context:component-scan base-package="com.stolser"/>-->
     <context:annotation-config />
+    <context:property-placeholder location="classpath:properties/*.properties" />
 
-    <bean class="com.mongodb.MongoClient">
-        <constructor-arg value="localhost"/>
-        <constructor-arg value="27017"/>
+    <import resource="mongoDbConfig.xml"/>
+    <import resource="entityBeans.xml"/>
+
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoClient"/>
+        <constructor-arg value="${mongo.dbname}"/>
     </bean>
-    <bean class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg ref="com.mongodb.MongoClient"/>
-        <constructor-arg value="roadfares"/>
-    </bean>
+
     <bean id="runner" class="com.stolser.AppRunner"/>
 </beans>

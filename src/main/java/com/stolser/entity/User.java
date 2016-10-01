@@ -2,6 +2,8 @@ package com.stolser.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -9,13 +11,12 @@ import java.util.concurrent.atomic.AtomicLong;
 @Document(collection = "users")
 public class User {
     private static final AtomicLong nextId = new AtomicLong(1);
-    @Id
-    private String id;
+    @Id private String id;
+    @Indexed(unique = true, name = "systemId", direction = IndexDirection.ASCENDING)
     private long systemId;
     private String firstName;
     private String lastName;
     private String email;
-    private double discount;
     @Version private Long version;
 
     public User(String firstName, String lastName, String email) {
@@ -53,17 +54,9 @@ public class User {
         this.email = email;
     }
 
-    public double getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(double discount) {
-        this.discount = discount;
-    }
-
     public String toFullString() {
         return String.format("User{_id: %s, systemId: %d, firstName: %s, lastName: %s," +
-                "email: %s, discount: %.2f)}", id, systemId, firstName, lastName, email, discount);
+                "email: %s)}", id, systemId, firstName, lastName, email);
     }
 
     @Override
@@ -73,17 +66,18 @@ public class User {
 
         User user = (User) o;
 
-        return id != null ? id.equals(user.id) : user.id == null;
+        return systemId == user.systemId;
 
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return (int) (systemId ^ (systemId >>> 32));
     }
 
     @Override
     public String toString() {
-        return String.format("User{%s %s (systemId: %d)}", lastName, firstName, systemId);
+
+        return String.format("User{%s %s (id: %d; %s)}", lastName, firstName, systemId, email);
     }
 }

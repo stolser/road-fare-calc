@@ -1,23 +1,39 @@
 package com.stolser.entity;
 
+import static org.apache.commons.collections.CollectionUtils.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.*;
 
 @Document(collection = "posts")
 public class TrafficPost {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrafficPost.class);
     @Id private String id;
-    private String systemId; // todo: create a unique index
+    @Indexed(unique = true, name = "systemId", direction = IndexDirection.ASCENDING)
+    private String systemId;
     private String name;
-    private Set<Road> roads;
+    @DBRef
+    private List<Road> roads;
     @Version private Long version;
 
     public TrafficPost(String systemId, String name) {
-        this.systemId = systemId; // todo: check for uniqueness;
+        LOGGER.debug("constructor...");
+        checkNotNull(systemId, "systemId cannot be null.");
+        this.systemId = systemId;
         this.name = name;
+        this.roads = new ArrayList<>();
     }
 
     public void register(Car car) {
@@ -36,13 +52,13 @@ public class TrafficPost {
         this.name = name;
     }
 
-    public Set<Road> getRoads() {
+    public List<Road> getRoads() {
         return roads;
     }
 
-    public void addRoad(Road newRoad) {
-        if (roads == null) roads = new HashSet<>();
-        roads.add(newRoad);
+    public void setRoads(List<Road> roads) {
+        LOGGER.debug("setting roads ...");
+        this.roads = roads;
     }
 
     @Override
@@ -52,17 +68,18 @@ public class TrafficPost {
 
         TrafficPost that = (TrafficPost) o;
 
-        return id != null ? id.equals(that.id) : that.id == null;
+        return systemId.equals(that.systemId);
 
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return systemId.hashCode();
     }
 
     @Override
     public String toString() {
-        return String.format("TrafficPost{name: '%s', systemId: '%s'}", name, systemId);
+        return String.format("TrafficPost{name: '%s', systemId: '%s', " +
+                "roadN: %d}", name, systemId, size(roads));
     }
 }
