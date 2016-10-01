@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd">
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!--Users-->
     <bean class="com.stolser.entity.User">
@@ -32,20 +29,102 @@
 
     <!--TrafficPosts-->
     <bean id="trPost1" class="com.stolser.entity.TrafficPost">
-        <constructor-arg name="systemId" value="tr-post-1"/>
-        <constructor-arg name="name" value="Kiev"/>
+        <constructor-arg name="systemId" value="${entity.trpost1.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost1.name}"/>
         <property name="roads">
             <list>
                 <ref bean="road1"/>
+                <ref bean="road2"/>
             </list>
         </property>
     </bean>
     <bean id="trPost2" class="com.stolser.entity.TrafficPost">
-        <constructor-arg name="systemId" value="tr-post-2"/>
-        <constructor-arg name="name" value="Vinnitsa"/>
+        <constructor-arg name="systemId" value="${entity.trpost2.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost2.name}"/>
         <property name="roads">
             <list>
                 <ref bean="road1"/>
+                <ref bean="road3"/>
+                <ref bean="road4"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost3" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="${entity.trpost3.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost3.name}"/>
+        <property name="roads">
+            <list>
+                <ref bean="road2"/>
+                <ref bean="road5"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost4" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="${entity.trpost4.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost4.name}"/>
+        <property name="roads">
+            <list>
+                <ref bean="road3"/>
+                <ref bean="road6"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost5" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="${entity.trpost5.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost5.name}"/>
+        <property name="roads">
+            <list>
+                <ref bean="road4"/>
+                <ref bean="road7"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost6" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="${entity.trpost6.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost6.name}"/>
+        <property name="roads">
+            <list>
+                <ref bean="road5"/>
+                <ref bean="road8"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost7" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="${entity.trpost7.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost7.name}"/>
+        <property name="roads">
+            <list>
+                <ref bean="road7"/>
+                <ref bean="road9"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost8" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="${entity.trpost8.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost8.name}"/>
+        <property name="roads">
+            <list>
+                <ref bean="road6"/>
+                <ref bean="road9"/>
+                <ref bean="road10"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost9" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="${entity.trpost9.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost9.name}"/>
+        <property name="roads">
+            <list>
+                <ref bean="road8"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="trPost10" class="com.stolser.entity.TrafficPost">
+        <constructor-arg name="systemId" value="${entity.trpost10.systemid}"/>
+        <constructor-arg name="name" value="${entity.trpost10.name}"/>
+        <property name="roads">
+            <list>
+                <ref bean="road10"/>
             </list>
         </property>
     </bean>
@@ -53,21 +132,114 @@
 
     <!--Roads-->
     <bean id="road1" class="com.stolser.entity.Road">
-        <constructor-arg name="systemId" value="road-A1"/>
-        <!--<constructor-arg name="trafficPosts">-->
-            <!--<list>-->
-                <!--<ref bean="trPost1"/>-->
-                <!--<ref bean="trPost2"/>-->
-            <!--</list>-->
-        <!--</constructor-arg>-->
-        <constructor-arg name="length" value="150"/>
-        <constructor-arg name="fare" value="50"/>
-        <!--<property name="trafficPosts">-->
-            <!--<list>-->
-                <!--<ref bean="trPost1"/>-->
-                <!--<ref bean="trPost2"/>-->
-            <!--</list>-->
-        <!--</property>-->
+        <constructor-arg name="systemId" value="${entity.road1.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road1.post1systemid}</value>
+                <value>${entity.road1.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road1.length}"/>
+        <constructor-arg name="fare" value="${entity.road1.fare}"/>
+    </bean>
+    <bean id="road2" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road2.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road2.post1systemid}</value>
+                <value>${entity.road2.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road2.length}"/>
+        <constructor-arg name="fare" value="${entity.road2.fare}"/>
+    </bean>
+    <bean id="road3" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road3.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road3.post1systemid}</value>
+                <value>${entity.road3.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road3.length}"/>
+        <constructor-arg name="fare" value="${entity.road3.fare}"/>
+    </bean>
+    <bean id="road4" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road4.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road4.post1systemid}</value>
+                <value>${entity.road4.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road4.length}"/>
+        <constructor-arg name="fare" value="${entity.road4.fare}"/>
+    </bean>
+    <bean id="road5" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road5.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road5.post1systemid}</value>
+                <value>${entity.road5.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road5.length}"/>
+        <constructor-arg name="fare" value="${entity.road5.fare}"/>
+    </bean>
+    <bean id="road6" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road6.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road6.post1systemid}</value>
+                <value>${entity.road6.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road6.length}"/>
+        <constructor-arg name="fare" value="${entity.road6.fare}"/>
+    </bean>
+    <bean id="road7" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road7.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road7.post1systemid}</value>
+                <value>${entity.road7.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road7.length}"/>
+        <constructor-arg name="fare" value="${entity.road7.fare}"/>
+    </bean>
+    <bean id="road8" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road8.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road8.post1systemid}</value>
+                <value>${entity.road8.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road8.length}"/>
+        <constructor-arg name="fare" value="${entity.road8.fare}"/>
+    </bean>
+    <bean id="road9" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road9.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road9.post1systemid}</value>
+                <value>${entity.road9.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road9.length}"/>
+        <constructor-arg name="fare" value="${entity.road9.fare}"/>
+    </bean>
+    <bean id="road10" class="com.stolser.entity.Road">
+        <constructor-arg name="systemId" value="${entity.road10.systemid}"/>
+        <constructor-arg name="postSystemIds">
+            <list>
+                <value>${entity.road10.post1systemid}</value>
+                <value>${entity.road10.post2systemid}</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg name="length" value="${entity.road10.length}"/>
+        <constructor-arg name="fare" value="${entity.road10.fare}"/>
     </bean>
     <!--End of Roads-->
 </beans>

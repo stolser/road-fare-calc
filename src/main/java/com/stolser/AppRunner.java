@@ -79,24 +79,18 @@ public class AppRunner {
         template.dropCollection(TrafficPost.class);
         template.dropCollection(UserTracker.class);
 
-//        Index userSystemIdIndex = new Index("systemId", Sort.Direction.ASC).unique();
-//        Index roadSystemIdIndex = new Index("systemId", Sort.Direction.ASC).unique();
-//        Index trafficPostSystemIdIndex = new Index("systemId", Sort.Direction.ASC).unique();
-//        template.indexOps(User.class).dropAllIndexes();
-//        template.indexOps(Road.class).ensureIndex(roadSystemIdIndex);
-//        template.indexOps(User.class).ensureIndex(trafficPostSystemIdIndex);
-
         System.out.println("Users into the DB:");
         usersPopulateDb.stream().forEach(System.out::println);
         userRepo.insert(usersPopulateDb);
 
-        System.out.println("TrafficPosts into the DB:");
-        postsPopulateDb.stream().forEach(System.out::println);
-//        trafficPostRepo.insert(postsPopulateDb);
-
         System.out.println("Roads into the DB:");
         roadsPopulateDb.stream().forEach(System.out::println);
         roadRepo.insert(roadsPopulateDb);
+
+        System.out.println("TrafficPosts into the DB:");
+        postsPopulateDb.stream().forEach(System.out::println);
+        trafficPostRepo.insert(postsPopulateDb);
+
 
     }
 

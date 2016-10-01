@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,27 +20,22 @@ public class Road {
     @Id private String id;
     @Indexed(unique = true, name = "systemId", direction = IndexDirection.ASCENDING)
     private String systemId;
-    @DBRef
-    private List<TrafficPost> trafficPosts;
+    private List<String> postSystemIds;
     private double length;
     private BigDecimal fare;
 
-    public Road(String systemId,double length, BigDecimal fare) {
-        // todo: check trafficPosts: 2 elements, not null
+    public Road(String systemId, List<String> postSystemIds, double length, BigDecimal fare) {
+        // todo: check postSystemIds: 2 elements, not null
+        LOGGER.debug("Road constructor...: sysId = {}; postSystemIds = {}", systemId, postSystemIds);
         checkNotNull(systemId, "systemId cannot be null.");
         this.systemId = systemId;
-        this.trafficPosts = new ArrayList<>();
+        this.postSystemIds = postSystemIds;
         this.length = length;
         this.fare = fare;
     }
 
-    public void setTrafficPosts(List<TrafficPost> trafficPosts) {
-        this.trafficPosts = trafficPosts;
-        LOGGER.debug("setting trafficposts...: {}", trafficPosts);
-    }
-
-    public List<TrafficPost> getTrafficPosts() {
-        return trafficPosts;
+    public List<String> getPostSystemIds() {
+        return postSystemIds;
     }
 
     public String getSystemId() {
@@ -77,6 +71,6 @@ public class Road {
 
     @Override
     public String toString() {
-        return String.format("Road{'%s' (%s - %s)}", systemId, trafficPosts.get(0), trafficPosts.get(1));
+        return String.format("Road{'%s' ('%s' - '%s')}", systemId, postSystemIds.get(0), postSystemIds.get(1));
     }
 }

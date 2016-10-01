@@ -29,7 +29,7 @@ public class TrafficPost {
     @Version private Long version;
 
     public TrafficPost(String systemId, String name) {
-        LOGGER.debug("constructor...");
+        LOGGER.debug("TrafficPost constructor...: sysId = {}", systemId);
         checkNotNull(systemId, "systemId cannot be null.");
         this.systemId = systemId;
         this.name = name;
@@ -57,7 +57,7 @@ public class TrafficPost {
     }
 
     public void setRoads(List<Road> roads) {
-        LOGGER.debug("setting roads ...");
+        LOGGER.debug("setting roads ...: {}", roads);
         this.roads = roads;
     }
 
