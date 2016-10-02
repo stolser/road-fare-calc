@@ -1,4 +1,4 @@
-package com.stolser.configuration;
+package com.stolser.client.config;
 
 import com.stolser.entity.Car;
 import com.stolser.entity.TrafficPost;

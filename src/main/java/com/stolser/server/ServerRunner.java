@@ -1,6 +1,6 @@
-package com.stolser;
+package com.stolser.server;
 
-import com.stolser.configuration.ServerMainConfig;
+import com.stolser.server.config.ServerMainConfig;
 import com.stolser.entity.*;
 import com.stolser.repository.RoadRepository;
 import com.stolser.repository.TrafficPostRepository;
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.*;
@@ -28,15 +27,16 @@ public class ServerRunner {
     private List<TrafficPost> postsPopulateDb;
     private List<Road> roadsPopulateDb;
 
+    private List<UserTracker> trackers;
+
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(ServerMainConfig.class);
-        ServerRunner runner = context.getBean("runner", ServerRunner.class);
+        ServerRunner runner = context.getBean("serverRunner", ServerRunner.class);
         System.out.printf("There are %d beans in the Server context.\n", context.getBeanDefinitionCount());
         Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
 
         runner.setupDatabase();
-
-//        app.displayDataFromDb();
+        runner.displayDataFromDb();
 
 
     }
@@ -49,6 +49,7 @@ public class ServerRunner {
         this.roadRepo = roadRepo;
         this.trafficPostRepo = trafficPostRepo;
         this.userTrackerRepo = userTrackerRepo;
+        this.trackers = new ArrayList<>();
     }
 
     @Autowired
@@ -72,16 +73,8 @@ public class ServerRunner {
         template.dropCollection(TrafficPost.class);
         template.dropCollection(UserTracker.class);
 
-        System.out.println("Users into the DB:");
-        usersPopulateDb.stream().forEach(System.out::println);
         userRepo.insert(usersPopulateDb);
-
-        System.out.println("Roads into the DB:");
-        roadsPopulateDb.stream().forEach(System.out::println);
         roadRepo.insert(roadsPopulateDb);
-
-        System.out.println("TrafficPosts into the DB:");
-        postsPopulateDb.stream().forEach(System.out::println);
         trafficPostRepo.insert(postsPopulateDb);
 
     }
@@ -89,6 +82,12 @@ public class ServerRunner {
     private void displayDataFromDb() {
         System.out.println("Users from the DB:");
         userRepo.findAll().stream().forEach(System.out::println);
+
+        System.out.println("TrafficPosts from the DB:");
+        trafficPostRepo.findAll().stream().forEach(System.out::println);
+
+        System.out.println("Roads from the DB:");
+        roadRepo.findAll().stream().forEach(System.out::println);
     }
 
 }

@@ -1,6 +1,6 @@
-package com.stolser;
+package com.stolser.client;
 
-import com.stolser.configuration.ClientMainConfig;
+import com.stolser.client.config.ClientMainConfig;
 import com.stolser.entity.Car;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -33,7 +33,7 @@ public class ClientRunner {
             System.out.println("----------------");
         });
 
-        cars.forEach(Car::startJourney);
+        //cars.forEach(Car::startJourney);
     }
 
     @Autowired
