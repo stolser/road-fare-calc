@@ -1,6 +1,6 @@
 package com.stolser.entity;
 
-public enum UserTrackerStatus {
+enum UserTrackerStatus {
     AT_TRAFFIC_POST("In the process of registration"),
     ON_THE_ROAD("Has hit the road"),
     LEFT_AUTOBAHN("Has left the autobahn");
@@ -9,5 +9,9 @@ public enum UserTrackerStatus {
 
     UserTrackerStatus(String description) {
         this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

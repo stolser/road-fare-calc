@@ -7,13 +7,20 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${PATTERN_DEFAULT}" />
         </Console>
+        <Console name="ConsoleMarker" target="SYSTEM_OUT">
+            <PatternLayout pattern="${PATTERN_DEFAULT}" />
+            <MarkerFilter marker="carStatusUpdate" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
     </Appenders>
     <Loggers>
         <Root level="error">
             <AppenderRef ref="Console" />
         </Root>
-        <Logger name="com.stolser" level="error">
+        <Logger name="com.stolser" level="error" >
             <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="com.stolser" level="debug" additivity="false">
+            <AppenderRef ref="ConsoleMarker"/>
         </Logger>
     </Loggers>
 </Configuration>

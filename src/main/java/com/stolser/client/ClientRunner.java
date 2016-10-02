@@ -33,7 +33,13 @@ public class ClientRunner {
             System.out.println("----------------");
         });
 
-        //cars.forEach(Car::startJourney);
+        cars.forEach(car -> {
+            new Thread() {
+                public void run() {
+                    car.startJourney();
+                }
+            }.start();
+        });
     }
 
     @Autowired

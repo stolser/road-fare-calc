@@ -3,6 +3,7 @@ package com.stolser.client.config;
 import com.stolser.entity.Car;
 import com.stolser.entity.TrafficPost;
 import com.stolser.entity.User;
+import com.stolser.repository.RoadRepository;
 import com.stolser.repository.TrafficPostRepository;
 import com.stolser.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -21,6 +22,8 @@ public class CarConfig {
     private UserRepository userRepo;
     @Autowired
     private TrafficPostRepository postRepo;
+    @Autowired
+    private RoadRepository roadRepo;
 
     @Bean(name = {"cars"})
     @Lazy
@@ -32,6 +35,8 @@ public class CarConfig {
             String plate = newPlate();
             List<TrafficPost> journeyMap = newJourneyMap();
             Car newCar = new Car(plate, user, journeyMap);
+            newCar.setPostRepo(postRepo);
+            newCar.setRoadRepo(roadRepo);
             cars.add(newCar);
         }
 

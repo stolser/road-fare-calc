@@ -4,6 +4,8 @@ import static org.apache.commons.collections.CollectionUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.IndexDirection;
@@ -12,7 +14,9 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.*;
@@ -20,6 +24,7 @@ import static com.google.common.base.Preconditions.*;
 @Document(collection = "posts")
 public class TrafficPost {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrafficPost.class);
+    private static final Marker carStatusUpdate = MarkerFactory.getMarker("carStatusUpdate");
     @Id private String id;
     @Indexed(unique = true, name = "systemId", direction = IndexDirection.ASCENDING)
     private String systemId;
@@ -36,8 +41,17 @@ public class TrafficPost {
         this.roads = new ArrayList<>();
     }
 
-    public void register(Car car) {
-        // send a notification to the server;
+    public synchronized void register(Car car) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        LOGGER.debug(carStatusUpdate, String.format("TP: %s:\n\tuser: %s;\n\tstatus: %s;\n\troad: %s;\n\tdate: %s\n" +
+                "--------------------------------\n",
+                car.getCurrentTrafficPost(), car.getDriver(), car.getStatus(), car.getCurrentRoad(),
+                new SimpleDateFormat("dd.MM HH:mm:ss").format(new Date())));
     }
 
     public String getSystemId() {

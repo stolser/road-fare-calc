@@ -2,19 +2,25 @@ package com.stolser.entity;
 
 import com.stolser.repository.RoadRepository;
 import com.stolser.repository.TrafficPostRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Car {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Car.class);
     private String plate;
     private User driver;
     private List<TrafficPost> journeyRoute;
-    private int nextTrafficPostIndex;
 
+    private int nextPostIndex;
     private UserTrackerStatus status;
     private boolean isOnTheWay;
     private TrafficPost currentTrafficPost;
+    private TrafficPost nextTrafficPost;
     private Road currentRoad;
 
     TrafficPostRepository postRepo;
@@ -26,12 +32,10 @@ public class Car {
         this.journeyRoute = journeyRoute;
     }
 
-    @Autowired
     public void setPostRepo(TrafficPostRepository postRepo) {
         this.postRepo = postRepo;
     }
 
-    @Autowired
     public void setRoadRepo(RoadRepository roadRepo) {
         this.roadRepo = roadRepo;
     }
@@ -39,28 +43,82 @@ public class Car {
     public void startJourney() {
         if (isOnTheWay) throw new IllegalStateException("This car is already on the road.");
 
-        TrafficPost nextTP;
-        Road nextRoad;
+        chooseAndArriveAtStartingTrafficPost();
 
+        while (isOnTheWay) {
+            chooseNextTrafficPostAndRoad();
 
-//        chooseStartingTrafficPost().register(this);
-//        while (isOnTheWay) {
-//            nextTP = chooseNextTrafficPost();
-//
-//            if (nextTP == null) {
-//                leaveAutobahn();
-//            } else {
-//                nextRoad = chooseNextRoad(nextTP);
-//                driveAlongNextRoad(nextRoad);
-//                nextTP.register(this);
-//            }
-//        }
+            if (nextTrafficPost == null) {
+                leaveAutobahn();
+            } else {
+                driveAlongNextRoad();
+                arriveAndRegisterAtNextTrafficPost();
+            }
+        }
 
     }
 
-    private TrafficPost chooseStartingTrafficPost() {
+    private void chooseAndArriveAtStartingTrafficPost() {
+        System.out.println("chooseAndArriveAtStartingTrafficPost...");
+        isOnTheWay = true;
+        status = UserTrackerStatus.AT_TRAFFIC_POST;
+        currentTrafficPost = journeyRoute.get(nextPostIndex);
+        nextPostIndex++;
 
-        return null;
+        System.out.println("currentTrafficPost = " + currentTrafficPost);
+        currentTrafficPost.register(this);
+    }
+
+    private void chooseNextTrafficPostAndRoad() {
+        if (journeyIsOver()) {
+            nextTrafficPost = null;
+        } else {
+            nextTrafficPost = journeyRoute.get(nextPostIndex);
+            nextPostIndex++;
+            List<String> currentAndNextPostSystemIds = new ArrayList<>();
+            currentAndNextPostSystemIds.add(currentTrafficPost.getSystemId());
+            currentAndNextPostSystemIds.add(nextTrafficPost.getSystemId());
+            List<Road> possibleRoads = roadRepo.findByPostSystemIdsIn(currentAndNextPostSystemIds);
+            System.out.println("possibleRoads: " + possibleRoads);
+            currentRoad = possibleRoads.get(0);
+
+            LOGGER.debug("car: {}; nextTrafficPost: {}; currentRoad: {}",
+                    this.plate, nextTrafficPost, currentRoad);
+        }
+    }
+
+    private boolean journeyIsOver() {
+        return nextPostIndex >= journeyRoute.size();
+    }
+
+    private void leaveAutobahn() {
+        nextPostIndex = 0;
+        status = UserTrackerStatus.LEFT_AUTOBAHN;
+        isOnTheWay = false;
+        nextTrafficPost = null;
+        currentRoad = null;
+
+        currentTrafficPost.register(this);
+        currentTrafficPost = null;
+    }
+
+    private void driveAlongNextRoad() {
+        status = UserTrackerStatus.ON_THE_ROAD;
+        currentTrafficPost.register(this);
+
+        try {
+            Thread.sleep(TimeUnit.SECONDS.toMillis((long) currentRoad.getLength()/100));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void arriveAndRegisterAtNextTrafficPost() {
+        status = UserTrackerStatus.AT_TRAFFIC_POST;
+        currentRoad = null;
+        currentTrafficPost = nextTrafficPost;
+        currentTrafficPost.register(this);
     }
 
     public String getPlate() {
@@ -69,6 +127,18 @@ public class Car {
 
     public User getDriver() {
         return driver;
+    }
+
+    public UserTrackerStatus getStatus() {
+        return status;
+    }
+
+    public Road getCurrentRoad() {
+        return currentRoad;
+    }
+
+    public TrafficPost getCurrentTrafficPost() {
+        return currentTrafficPost;
     }
 
     public List<TrafficPost> getJourneyRoute() {
