@@ -1,6 +1,7 @@
 package com.stolser.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -12,31 +13,42 @@ import java.util.TreeMap;
 @Document(collection = "trackers")
 public class UserTracker {
     @Id private String id;
-    private long userId;
-    private Map<Instant, String> trafficPostIds; // TrafficPost systemIds
-    private List<String> roadIds;// Road systemIds
+    @DBRef
+    private User user;
+    private UserTrackerStatus status;
+    @DBRef
+    private Map<Instant, TrafficPost> trafficPosts;
+    @DBRef
+    private List<Road> roads;
 
-    public UserTracker(long userId) {
-        this.userId = userId;
-        this.trafficPostIds = new TreeMap<>();
-        this.roadIds = new ArrayList<>();
+    public UserTracker(User user) {
+        this.user = user;
+        this.trafficPosts = new TreeMap<>();
+        this.roads = new ArrayList<>();
     }
 
-    public void addNewTrafficPost(String trafficPostId, Instant date, String roadId) {
-        trafficPostIds.put(date, trafficPostId);
-        roadIds.add(roadId);
+    public void addNewTrafficPost(TrafficPost trafficPostId, Instant date) {
+        trafficPosts.put(date, trafficPostId);
     }
 
-    public long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public Map<Instant, String> getTrafficPostIds() {
-        return trafficPostIds;
+    public UserTrackerStatus getStatus() {
+        return status;
     }
 
-    public List<String> getRoadIds() {
-        return roadIds;
+    public void setStatus(UserTrackerStatus status) {
+        this.status = status;
+    }
+
+    public Map<Instant, TrafficPost> getTrafficPosts() {
+        return trafficPosts;
+    }
+
+    public List<Road> getRoads() {
+        return roads;
     }
 
     @Override
@@ -56,6 +68,6 @@ public class UserTracker {
 
     @Override
     public String toString() {
-        return String.format("UserTracker{userId: %d}", userId);
+        return String.format("UserTracker{user: %s}", user);
     }
 }
