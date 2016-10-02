@@ -1,16 +1,66 @@
 package com.stolser.entity;
 
+import com.stolser.repository.RoadRepository;
+import com.stolser.repository.TrafficPostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 
 public class Car {
     private String plate;
     private User driver;
-    private List<TrafficPost> journeyMap;
+    private List<TrafficPost> journeyRoute;
+    private int nextTrafficPostIndex;
 
-    public Car(String plate, User driver, List<TrafficPost> journeyMap) {
+    private UserTrackerStatus status;
+    private boolean isOnTheWay;
+    private TrafficPost currentTrafficPost;
+    private Road currentRoad;
+
+    TrafficPostRepository postRepo;
+    RoadRepository roadRepo;
+
+    public Car(String plate, User driver, List<TrafficPost> journeyRoute) {
         this.plate = plate; // todo: check for uniqueness
         this.driver = driver;
-        this.journeyMap = journeyMap;
+        this.journeyRoute = journeyRoute;
+    }
+
+    @Autowired
+    public void setPostRepo(TrafficPostRepository postRepo) {
+        this.postRepo = postRepo;
+    }
+
+    @Autowired
+    public void setRoadRepo(RoadRepository roadRepo) {
+        this.roadRepo = roadRepo;
+    }
+
+    public void startJourney() {
+        if (isOnTheWay) throw new IllegalStateException("This car is already on the road.");
+
+        TrafficPost nextTP;
+        Road nextRoad;
+
+
+//        chooseStartingTrafficPost().register(this);
+//        while (isOnTheWay) {
+//            nextTP = chooseNextTrafficPost();
+//
+//            if (nextTP == null) {
+//                leaveAutobahn();
+//            } else {
+//                nextRoad = chooseNextRoad(nextTP);
+//                driveAlongNextRoad(nextRoad);
+//                nextTP.register(this);
+//            }
+//        }
+
+    }
+
+    private TrafficPost chooseStartingTrafficPost() {
+
+        return null;
     }
 
     public String getPlate() {
@@ -21,8 +71,8 @@ public class Car {
         return driver;
     }
 
-    public List<TrafficPost> getJourneyMap() {
-        return journeyMap;
+    public List<TrafficPost> getJourneyRoute() {
+        return journeyRoute;
     }
 
     @Override
