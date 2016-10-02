@@ -8,6 +8,7 @@
        http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
 
     <mongo:repositories base-package="com.stolser.repository"/>
+
     <mongo:mongo-client id="mongoClient" host="${mongo.host}" port="${mongo.port}">
         <mongo:client-options
                 connections-per-host="${mongo.connectionsPerHost}"
@@ -18,5 +19,10 @@
     <!--<constructor-arg value="localhost"/>-->
     <!--<constructor-arg value="27017"/>-->
     <!--</bean>-->
+
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoClient"/>
+        <constructor-arg value="${mongo.dbname}"/>
+    </bean>
 
 </beans>

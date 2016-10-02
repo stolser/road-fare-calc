@@ -1,25 +1,23 @@
 package com.stolser;
 
-import static org.springframework.data.mongodb.core.query.Criteria.*;
-
+import com.stolser.configuration.ServerMainConfig;
 import com.stolser.entity.*;
 import com.stolser.repository.RoadRepository;
 import com.stolser.repository.TrafficPostRepository;
 import com.stolser.repository.UserRepository;
 import com.stolser.repository.UserTrackerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.domain.Sort;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
 
-public class AppRunner {
-    private static final String EMAIL = "stolser@ukr.net";
-
+public class ServerRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerRunner.class);
     private MongoTemplate template;
     private UserRepository userRepo;
     private RoadRepository roadRepo;
@@ -31,22 +29,21 @@ public class AppRunner {
     private List<Road> roadsPopulateDb;
 
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("config/mainAppConfig.xml");
-        AppRunner app = context.getBean("runner", AppRunner.class);
-        System.out.printf("There are %d beans in the context.\n", context.getBeanDefinitionCount());
+        ApplicationContext context = new AnnotationConfigApplicationContext(ServerMainConfig.class);
+        ServerRunner runner = context.getBean("runner", ServerRunner.class);
+        System.out.printf("There are %d beans in the Server context.\n", context.getBeanDefinitionCount());
         Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
 
-        app.setupDatabase();
+        runner.setupDatabase();
+
 //        app.displayDataFromDb();
 
 
-//        app.updateTrafficPostCollection();
-//        app.createVehicles();
     }
 
     @Autowired
-    public AppRunner(MongoTemplate template, UserRepository userRepo, RoadRepository roadRepo,
-                     TrafficPostRepository trafficPostRepo, UserTrackerRepository userTrackerRepo) {
+    public ServerRunner(MongoTemplate template, UserRepository userRepo, RoadRepository roadRepo,
+                        TrafficPostRepository trafficPostRepo, UserTrackerRepository userTrackerRepo) {
         this.template = template;
         this.userRepo = userRepo;
         this.roadRepo = roadRepo;
@@ -69,10 +66,6 @@ public class AppRunner {
         this.postsPopulateDb = postsPopulateDb;
     }
 
-    private void updateTrafficPostCollection() {
-
-    }
-
     private void setupDatabase() {
         template.dropCollection(User.class);
         template.dropCollection(Road.class);
@@ -91,7 +84,6 @@ public class AppRunner {
         postsPopulateDb.stream().forEach(System.out::println);
         trafficPostRepo.insert(postsPopulateDb);
 
-
     }
 
     private void displayDataFromDb() {
@@ -99,25 +91,4 @@ public class AppRunner {
         userRepo.findAll().stream().forEach(System.out::println);
     }
 
-    private void createVehicles() {
-        List<TrafficPost> journeyMap = new ArrayList<>();
-        User user1 = template.findOne(new Query(where("firstName").is("Oleg")), User.class);
-        User user2 = template.findOne(new Query(where("firstName").is("Anton")), User.class);
-        User user3 = template.findOne(new Query(where("firstName").is("Bill")), User.class);
-        User user4 = template.findOne(new Query(where("firstName").is("Joshua")), User.class);
-
-        Car car1 = new Car("AO777PP", user1, journeyMap);
-        Car car2 = new Car("XZ-111", user2, journeyMap);
-        Car car3 = new Car("18Wheeler", user3, journeyMap);
-        Car car4 = new Car("School-bus", user4, journeyMap);
-        Set<Car> cars = new HashSet<>();
-        cars.add(car1);
-        cars.add(car2);
-        cars.add(car3);
-        cars.add(car4);
-
-        System.out.println("cars: ");
-        cars.stream().forEach(System.out::println);
-
-    }
 }
