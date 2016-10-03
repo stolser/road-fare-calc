@@ -14,7 +14,14 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,10 +55,25 @@ public class TrafficPost {
             e.printStackTrace();
         }
 
-        LOGGER.debug(carStatusUpdate, String.format("TP: %s:\n\tuser: %s;\n\tstatus: %s;\n\troad: %s;\n\tdate: %s\n" +
-                "--------------------------------\n",
+        LOGGER.debug(carStatusUpdate, String.format("Client. TP: %s:\n\tuser: %s;\n\tstatus: %s;\n" +
+                "\troad: %s;\n\tdate: %s\n--------------------------------\n",
                 car.getCurrentTrafficPost(), car.getDriver(), car.getStatus(), car.getCurrentRoad(),
                 new SimpleDateFormat("dd.MM HH:mm:ss").format(new Date())));
+
+        try (Socket socket = new Socket("localhost", 7777);
+             ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
+                        socket.getOutputStream()))) {
+            Message message = new Message(car.getCurrentTrafficPost().getSystemId(),
+                    car.getDriver().getSystemId(),
+                    car.getStatus(),
+                    car.getCurrentRoad() != null ? car.getCurrentRoad().getSystemId() : null,
+                    Instant.now().toEpochMilli());
+
+            output.writeObject(message);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getSystemId() {

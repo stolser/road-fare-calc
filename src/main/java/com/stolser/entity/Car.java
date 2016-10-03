@@ -4,7 +4,6 @@ import com.stolser.repository.RoadRepository;
 import com.stolser.repository.TrafficPostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +64,6 @@ public class Car {
         currentTrafficPost = journeyRoute.get(nextPostIndex);
         nextPostIndex++;
 
-        System.out.println("currentTrafficPost = " + currentTrafficPost);
         currentTrafficPost.register(this);
     }
 
@@ -75,10 +73,8 @@ public class Car {
         } else {
             nextTrafficPost = journeyRoute.get(nextPostIndex);
             nextPostIndex++;
-            List<String> currentAndNextPostSystemIds = new ArrayList<>();
-            currentAndNextPostSystemIds.add(currentTrafficPost.getSystemId());
-            currentAndNextPostSystemIds.add(nextTrafficPost.getSystemId());
-            List<Road> possibleRoads = roadRepo.findByPostSystemIdsIn(currentAndNextPostSystemIds);
+            List<Road> possibleRoads = roadRepo.findByTwoPostSystemIds(nextTrafficPost.getSystemId(),
+                    currentTrafficPost.getSystemId());
             System.out.println("possibleRoads: " + possibleRoads);
             currentRoad = possibleRoads.get(0);
 

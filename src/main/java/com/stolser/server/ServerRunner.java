@@ -13,7 +13,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 public class ServerRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerRunner.class);
@@ -22,6 +26,7 @@ public class ServerRunner {
     private RoadRepository roadRepo;
     private TrafficPostRepository trafficPostRepo;
     private UserTrackerRepository userTrackerRepo;
+    private ExecutorService threadPool;
 
     private List<User> usersPopulateDb;
     private List<TrafficPost> postsPopulateDb;
@@ -37,7 +42,7 @@ public class ServerRunner {
 
         runner.setupDatabase();
         runner.displayDataFromDb();
-
+        runner.startServer();
 
     }
 
@@ -67,6 +72,11 @@ public class ServerRunner {
         this.postsPopulateDb = postsPopulateDb;
     }
 
+    @Autowired
+    public void setThreadPool(ExecutorService threadPool) {
+        this.threadPool = threadPool;
+    }
+
     private void setupDatabase() {
         template.dropCollection(User.class);
         template.dropCollection(Road.class);
@@ -88,6 +98,19 @@ public class ServerRunner {
 
         System.out.println("Roads from the DB:");
         roadRepo.findAll().stream().forEach(System.out::println);
+    }
+
+    private void startServer() {
+        try(ServerSocket server = new ServerSocket(7777)) {
+            System.out.println("Server starts listening...");
+            while (true) {
+                Socket client = server.accept();
+                RequestProcessor processor = new RequestProcessor(client);
+                threadPool.submit(processor);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

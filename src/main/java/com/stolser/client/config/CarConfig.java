@@ -38,6 +38,7 @@ public class CarConfig {
             newCar.setPostRepo(postRepo);
             newCar.setRoadRepo(roadRepo);
             cars.add(newCar);
+            break;
         }
 
         return cars;

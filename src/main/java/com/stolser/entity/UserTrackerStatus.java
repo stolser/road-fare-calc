@@ -1,6 +1,6 @@
 package com.stolser.entity;
 
-enum UserTrackerStatus {
+public enum UserTrackerStatus {
     AT_TRAFFIC_POST("In the process of registration"),
     ON_THE_ROAD("Has hit the road"),
     LEFT_AUTOBAHN("Has left the autobahn");

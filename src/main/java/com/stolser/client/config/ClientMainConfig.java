@@ -1,9 +1,9 @@
 package com.stolser.client.config;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.*;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @ComponentScan(basePackages = {"com.stolser.client"})
@@ -11,4 +11,8 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource(value = {"/config/clientMainConfig.xml"})
 public class ClientMainConfig {
 
+    @Bean(value = "clientThreadPool")
+    public ExecutorService newThreadPool() {
+        return Executors.newFixedThreadPool(10);
+    }
 }

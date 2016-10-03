@@ -10,10 +10,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 @Component
 public class ClientRunner {
     private List<Car> cars;
+    @Autowired
+    private ExecutorService threadPool;
 
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(ClientMainConfig.class);
@@ -25,20 +28,15 @@ public class ClientRunner {
     }
 
     private void makeCarsHitTheRoad() {
-        System.out.println("Cars on the start:");
-        cars.stream().forEach(car -> {
-            System.out.println("car: " + car);
-            System.out.println("journeyMap: ");
-            car.getJourneyRoute().stream().forEach(journey -> System.out.printf("\t%s\n", journey));
-            System.out.println("----------------");
-        });
+        displayCars();
 
         cars.forEach(car -> {
-            new Thread() {
+            threadPool.submit(new Runnable() {
+                @Override
                 public void run() {
                     car.startJourney();
                 }
-            }.start();
+            });
         });
     }
 
@@ -46,5 +44,15 @@ public class ClientRunner {
     @Lazy
     public void setCars(List<Car> cars) {
         this.cars = cars;
+    }
+
+    private void displayCars() {
+        System.out.println("Cars on the start:");
+        cars.stream().forEach(car -> {
+            System.out.println("car: " + car);
+            System.out.println("journeyMap: ");
+            car.getJourneyRoute().stream().forEach(journey -> System.out.printf("\t%s\n", journey));
+            System.out.println("----------------");
+        });
     }
 }
