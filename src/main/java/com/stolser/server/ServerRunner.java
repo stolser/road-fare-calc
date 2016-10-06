@@ -37,10 +37,9 @@ public class ServerRunner {
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(ServerMainConfig.class);
         ServerRunner runner = context.getBean("serverRunner", ServerRunner.class);
-        System.out.printf("There are %d beans in the Server context.\n", context.getBeanDefinitionCount());
-        Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+        displayBeans(context);
 
-        runner.setupDatabase();
+//!!!!!!!!!!        runner.setupDatabase(); use only once, then MUST be comment!!!!!!!!!!!!
         runner.displayDataFromDb();
         runner.startServer();
 
@@ -92,25 +91,34 @@ public class ServerRunner {
     private void displayDataFromDb() {
         System.out.println("Users from the DB:");
         userRepo.findAll().stream().forEach(System.out::println);
+
         System.out.println("TrafficPosts from the DB:");
         trafficPostRepo.findAll().stream().forEach(System.out::println);
 
         System.out.println("Roads from the DB:");
         roadRepo.findAll().stream().forEach(System.out::println);
+
+        System.out.println("UserTrackers from the DB:");
+        userTrackerRepo.findAll().stream().forEach(System.out::println);
     }
 
     private void startServer() {
         try(ServerSocket server = new ServerSocket(7777)) {
             while (true) {
-                System.out.println("Server listening...");
+                LOGGER.debug("Server listening...");
                 Socket client = server.accept();
-                System.out.println("... a new request's been accepted.");
+                LOGGER.debug("... a new request's been accepted.");
                 RequestProcessor processor = new RequestProcessor(client);
                 threadPool.submit(processor);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void displayBeans(ApplicationContext context) {
+        System.out.printf("There are %d beans in the Server context.\n", context.getBeanDefinitionCount());
+        Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
     }
 
 }

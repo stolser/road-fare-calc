@@ -38,7 +38,7 @@ public class CarConfig {
             newCar.setPostRepo(postRepo);
             newCar.setRoadRepo(roadRepo);
             cars.add(newCar);
-            break;
+            break; // todo: remove break: now only one car exist;
         }
 
         return cars;

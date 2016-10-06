@@ -1,5 +1,7 @@
 package com.stolser.entity;
 
+import static com.google.common.base.Preconditions.*;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,7 +16,7 @@ public class UserTracker {
     private User user;
     private UserTrackerStatus status;
     @DBRef
-    private Map<Instant, TrafficPost> trafficPosts;
+    private Map<Long, TrafficPost> trafficPosts;
     @DBRef
     private List<Road> roads;
 
@@ -24,8 +26,22 @@ public class UserTracker {
         this.roads = new ArrayList<>();
     }
 
-    public void addNewTrafficPost(TrafficPost trafficPostId, Instant date) {
-        trafficPosts.put(date, trafficPostId);
+    public void addNewTrafficPost(TrafficPost trafficPostId, Long timestamp) {
+        checkNotNull(trafficPostId, "trafficPostId cannot be null.");
+        trafficPosts.put(timestamp, trafficPostId);
+    }
+
+    public void addNewRoad(Road road) {
+        checkNotNull(road, "road cannot be null.");
+        roads.add(road);
+    }
+
+    public void setStatus(UserTrackerStatus status) {
+        this.status = status;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public User getUser() {
@@ -36,11 +52,7 @@ public class UserTracker {
         return status;
     }
 
-    public void setStatus(UserTrackerStatus status) {
-        this.status = status;
-    }
-
-    public Map<Instant, TrafficPost> getTrafficPosts() {
+    public Map<Long, TrafficPost> getTrafficPosts() {
         return trafficPosts;
     }
 
@@ -65,6 +77,8 @@ public class UserTracker {
 
     @Override
     public String toString() {
-        return String.format("UserTracker{user: %s}", user);
+        return String.format("UserTracker{\n\t_id: '%s', \n\tuser: %s, \n\tstatus: %s, " +
+                "\n\ttrafficPosts.size: %d, \n\troads.size: %d}\n---------------------------",
+                id, user, status, trafficPosts.size(), roads.size());
     }
 }

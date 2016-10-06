@@ -24,7 +24,7 @@ public class Road {
 
     public Road(String systemId, List<String> postSystemIds, double length, BigDecimal fare) {
         // todo: check postSystemIds: 2 elements, not null
-        LOGGER.debug("Road constructor...: sysId = {}; postSystemIds = {}", systemId, postSystemIds);
+        LOGGER.trace("Road constructor...: sysId = {}; postSystemIds = {}", systemId, postSystemIds);
         checkNotNull(systemId, "systemId cannot be null.");
         this.systemId = systemId;
         this.postSystemIds = postSystemIds;

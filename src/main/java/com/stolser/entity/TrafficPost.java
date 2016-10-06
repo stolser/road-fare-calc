@@ -41,7 +41,7 @@ public class TrafficPost {
     @Version private Long version;
 
     public TrafficPost(String systemId, String name) {
-        LOGGER.debug("TrafficPost constructor...: sysId = {}", systemId);
+        LOGGER.trace("TrafficPost constructor...: sysId = {}", systemId);
         checkNotNull(systemId, "systemId cannot be null.");
         this.systemId = systemId;
         this.name = name;
@@ -57,13 +57,13 @@ public class TrafficPost {
 
         LOGGER.debug(carStatusUpdate, String.format("Client. TP: %s:\n\tuser: %s;\n\tstatus: %s;\n" +
                 "\troad: %s;\n\tdate: %s\n--------------------------------\n",
-                car.getCurrentTrafficPost(), car.getDriver(), car.getStatus(), car.getCurrentRoad(),
+                systemId, car.getDriver(), car.getStatus(), car.getCurrentRoad(),
                 new SimpleDateFormat("dd.MM HH:mm:ss").format(new Date())));
 
         try (Socket socket = new Socket("localhost", 7777);
              ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(
                         socket.getOutputStream()))) {
-            Message message = new Message(car.getCurrentTrafficPost().getSystemId(),
+            Message message = new Message(systemId,
                     car.getDriver().getSystemId(),
                     car.getStatus(),
                     car.getCurrentRoad() != null ? car.getCurrentRoad().getSystemId() : null,

@@ -55,10 +55,11 @@ public class Car {
             }
         }
 
+        LOGGER.debug("\tCar {} left the autobahn!", this);
+
     }
 
     private void chooseAndArriveAtStartingTrafficPost() {
-        System.out.println("chooseAndArriveAtStartingTrafficPost...");
         isOnTheWay = true;
         status = UserTrackerStatus.AT_TRAFFIC_POST;
         currentTrafficPost = journeyRoute.get(nextPostIndex);
@@ -75,7 +76,7 @@ public class Car {
             nextPostIndex++;
             List<Road> possibleRoads = roadRepo.findByTwoPostSystemIds(nextTrafficPost.getSystemId(),
                     currentTrafficPost.getSystemId());
-            System.out.println("possibleRoads: " + possibleRoads);
+            LOGGER.trace("possibleRoads: " + possibleRoads);
             currentRoad = possibleRoads.get(0);
 
             LOGGER.debug("car: {}; nextTrafficPost: {}; currentRoad: {}",
@@ -131,10 +132,6 @@ public class Car {
 
     public Road getCurrentRoad() {
         return currentRoad;
-    }
-
-    public TrafficPost getCurrentTrafficPost() {
-        return currentTrafficPost;
     }
 
     public List<TrafficPost> getJourneyRoute() {

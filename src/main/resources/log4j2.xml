@@ -16,11 +16,11 @@
         <Root level="error">
             <AppenderRef ref="Console" />
         </Root>
-        <Logger name="com.stolser" level="debug" >
+        <Logger name="com.stolser" level="debug" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="com.stolser" level="debug" additivity="false">
-            <AppenderRef ref="ConsoleMarker"/>
-        </Logger>
+        <!--<Logger name="com.stolser" level="debug" additivity="false">-->
+            <!--<AppenderRef ref="ConsoleMarker"/>-->
+        <!--</Logger>-->
     </Loggers>
 </Configuration>
