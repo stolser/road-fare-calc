@@ -92,7 +92,6 @@ public class ServerRunner {
     private void displayDataFromDb() {
         System.out.println("Users from the DB:");
         userRepo.findAll().stream().forEach(System.out::println);
-
         System.out.println("TrafficPosts from the DB:");
         trafficPostRepo.findAll().stream().forEach(System.out::println);
 
@@ -102,9 +101,10 @@ public class ServerRunner {
 
     private void startServer() {
         try(ServerSocket server = new ServerSocket(7777)) {
-            System.out.println("Server starts listening...");
             while (true) {
+                System.out.println("Server listening...");
                 Socket client = server.accept();
+                System.out.println("... a new request's been accepted.");
                 RequestProcessor processor = new RequestProcessor(client);
                 threadPool.submit(processor);
             }

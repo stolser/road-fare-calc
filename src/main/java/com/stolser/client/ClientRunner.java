@@ -29,15 +29,7 @@ public class ClientRunner {
 
     private void makeCarsHitTheRoad() {
         displayCars();
-
-        cars.forEach(car -> {
-            threadPool.submit(new Runnable() {
-                @Override
-                public void run() {
-                    car.startJourney();
-                }
-            });
-        });
+        cars.forEach(car -> threadPool.submit((Runnable) car::startJourney));
     }
 
     @Autowired

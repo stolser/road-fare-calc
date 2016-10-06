@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 
 @Configuration
 @EnableSpringConfigured
-@ImportResource(value = {"/config/serverMainConfig.xml"})
+@ImportResource(value = {"classpath:/config/serverMainConfig.xml"})
 public class ServerMainConfig {
 
     @Bean(value = "serverThreadPool")

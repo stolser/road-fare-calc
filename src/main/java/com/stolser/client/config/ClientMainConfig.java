@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 @Configuration
 @ComponentScan(basePackages = {"com.stolser.client"})
 @Import(value = {CarConfig.class})
-@ImportResource(value = {"/config/clientMainConfig.xml"})
+@ImportResource(value = {"classpath:/config/clientMainConfig.xml"})
 public class ClientMainConfig {
 
     @Bean(value = "clientThreadPool")
