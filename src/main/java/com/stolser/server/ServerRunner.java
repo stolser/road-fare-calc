@@ -39,7 +39,7 @@ public class ServerRunner {
         ServerRunner runner = context.getBean("serverRunner", ServerRunner.class);
         displayBeans(context);
 
-//!!!!!!!!!!        runner.setupDatabase(); use only once, then MUST be comment!!!!!!!!!!!!
+//        runner.setupDatabase(); todo: use only once, then MUST be comment!!!!!!!!!!!!
         runner.displayDataFromDb();
         runner.startServer();
 

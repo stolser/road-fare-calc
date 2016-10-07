@@ -20,9 +20,9 @@ public class Road {
     private String systemId;
     private List<String> postSystemIds;
     private double length;
-    private BigDecimal fare;
+    private double fare;
 
-    public Road(String systemId, List<String> postSystemIds, double length, BigDecimal fare) {
+    public Road(String systemId, List<String> postSystemIds, double length, double fare) {
         // todo: check postSystemIds: 2 elements, not null
         LOGGER.trace("Road constructor...: sysId = {}; postSystemIds = {}", systemId, postSystemIds);
         checkNotNull(systemId, "systemId cannot be null.");
@@ -44,11 +44,11 @@ public class Road {
         return length;
     }
 
-    public BigDecimal getFare() {
+    public double getFare() {
         return fare;
     }
 
-    public void setFare(BigDecimal fare) {
+    public void setFare(double fare) {
         this.fare = fare;
     }
 

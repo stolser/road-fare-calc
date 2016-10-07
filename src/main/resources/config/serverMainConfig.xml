@@ -14,7 +14,8 @@
 
     <import resource="mongoDbConfig.xml"/>
     <import resource="entityBeans.xml"/>
-
+    <import resource="emailConfig.xml"/>
 
     <bean id="serverRunner" class="com.stolser.server.ServerRunner"/>
+
 </beans>

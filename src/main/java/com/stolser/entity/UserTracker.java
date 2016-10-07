@@ -19,6 +19,7 @@ public class UserTracker {
     private Map<Long, TrafficPost> trafficPosts;
     @DBRef
     private List<Road> roads;
+    private String summaryReport;
 
     public UserTracker(User user) {
         this.user = user;
@@ -60,6 +61,14 @@ public class UserTracker {
         return roads;
     }
 
+    public String getSummaryReport() {
+        return summaryReport;
+    }
+
+    public void setSummaryReport(String summaryReport) {
+        this.summaryReport = summaryReport;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,7 +87,7 @@ public class UserTracker {
     @Override
     public String toString() {
         return String.format("UserTracker{\n\t_id: '%s', \n\tuser: %s, \n\tstatus: %s, " +
-                "\n\ttrafficPosts.size: %d, \n\troads.size: %d}\n---------------------------",
-                id, user, status, trafficPosts.size(), roads.size());
+                "\n\ttrafficPosts.size: %d, \n\troads.size: %d, \n\tsummaryReport: %s}\n---------------------------",
+                id, user, status, trafficPosts.size(), roads.size(), summaryReport);
     }
 }

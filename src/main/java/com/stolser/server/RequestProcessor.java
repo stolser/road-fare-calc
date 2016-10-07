@@ -18,12 +18,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.math.BigDecimal;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Configurable(autowire = Autowire.BY_TYPE, preConstruction = true, dependencyCheck = true)
 public class RequestProcessor implements Runnable {
@@ -37,6 +36,8 @@ public class RequestProcessor implements Runnable {
     private TrafficPostRepository trafficPostRepo;
     @Autowired
     private UserTrackerRepository userTrackerRepo;
+    @Autowired
+    private MailSender mailSender;
     private Socket socket;
 
     public RequestProcessor(Socket socket) {
@@ -84,13 +85,18 @@ public class RequestProcessor implements Runnable {
                     driverActiveTracker.addNewRoad(checkNotNull(road));
                     break;
                 case LEFT_AUTOBAHN:
-                    sendUserInfoAboutJourney();
                     break;
                 default:
                     throw new IllegalStateException("Wrong userTrackerStatus.");
             }
 
             driverActiveTracker.setStatus(status);
+
+            if (status == UserTrackerStatus.LEFT_AUTOBAHN) {
+//                sendUserInfoAboutJourney(driverActiveTracker);
+// todo: uncomment this + set username/password in the system properties to send emails;
+                driverActiveTracker.setSummaryReport(generateJourneySummaryText(driverActiveTracker));
+            }
 
             userTrackerRepo.save(driverActiveTracker);
 
@@ -103,8 +109,42 @@ public class RequestProcessor implements Runnable {
         }
     }
 
-    private void sendUserInfoAboutJourney() {
-        
+    private void sendUserInfoAboutJourney(UserTracker tracker) {
+        String messageText = generateJourneySummaryText(tracker);
+        String userEmail = tracker.getUser().getEmail();
+
+        mailSender.sendEmailTo(userEmail, messageText);
+    }
+
+    private String generateJourneySummaryText(UserTracker tracker) {
+        checkArgument(tracker.getStatus() == UserTrackerStatus.LEFT_AUTOBAHN, "Status MUST be LEFT_AUTOBAHN.");
+        StringBuilder builder = new StringBuilder();
+        User user = tracker.getUser();
+        double userFare = calculateUserFare(tracker.getRoads());
+        Map<Long, TrafficPost> postDateMapper = tracker.getTrafficPosts();
+        Set<Long> dates = new TreeSet<>(postDateMapper.keySet());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM HH:mm:ss");
+        AtomicInteger index = new AtomicInteger(1);
+
+        builder.append("<h2>Summary about journey along Autobahn</h2>");
+        builder.append(String.format("<p>User: %s %s</p>", user.getFirstName(), user.getLastName()));
+        builder.append(String.format("<p>Total fare: $%.2f</p>", userFare));
+        builder.append("<p>The route of the journey:</p>");
+        builder.append("<div><table><tr><th>#</th><th>TrafficPost</th><th>Date</th></tr>");
+        dates.stream().forEach(date -> {
+            builder.append(String.format("<tr><td>%d</td><td>%s</td><td>%s</td></tr>",
+                    index.getAndIncrement(),
+                    postDateMapper.get(date).getName(),
+                    dateFormat.format(new Date(date))));
+        });
+        builder.append("</table></div>");
+
+        return builder.toString();
+    }
+
+    private double calculateUserFare(List<Road> roads) {
+
+        return roads.stream().mapToDouble(Road::getFare).sum();
     }
 
     private void logInfo(UserTrackerStatus status, TrafficPost trafficPost, User driver, Road road, Long timestamp) {

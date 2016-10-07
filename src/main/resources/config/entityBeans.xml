@@ -8,22 +8,22 @@
     <bean class="com.stolser.entity.User">
         <constructor-arg value="${entity.user1.firstName}"/>
         <constructor-arg value="${entity.user1.secondName}"/>
-        <constructor-arg value="${system.email}"/>
+        <constructor-arg value="${system.clientEmail}"/>
     </bean>
     <bean class="com.stolser.entity.User">
         <constructor-arg value="${entity.user2.firstName}"/>
         <constructor-arg value="${entity.user2.secondName}"/>
-        <constructor-arg value="${system.email}"/>
+        <constructor-arg value="${system.clientEmail}"/>
     </bean>
     <bean class="com.stolser.entity.User">
         <constructor-arg value="${entity.user3.firstName}"/>
         <constructor-arg value="${entity.user3.secondName}"/>
-        <constructor-arg value="${system.email}"/>
+        <constructor-arg value="${system.clientEmail}"/>
     </bean>
     <bean class="com.stolser.entity.User">
         <constructor-arg value="${entity.user4.firstName}"/>
         <constructor-arg value="${entity.user4.secondName}"/>
-        <constructor-arg value="${system.email}"/>
+        <constructor-arg value="${system.clientEmail}"/>
     </bean>
     <!--End of Users-->
 

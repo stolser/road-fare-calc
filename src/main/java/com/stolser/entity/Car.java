@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class Car {
@@ -104,7 +105,8 @@ public class Car {
         currentTrafficPost.register(this);
 
         try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis((long) currentRoad.getLength()/100));
+            Thread.sleep(TimeUnit.SECONDS.toMillis((long) (currentRoad.getLength()/100 +
+                    ThreadLocalRandom.current().nextDouble(3))));
 
         } catch (InterruptedException e) {
             e.printStackTrace();
