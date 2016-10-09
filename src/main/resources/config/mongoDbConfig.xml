@@ -20,9 +20,18 @@
     <!--<constructor-arg value="27017"/>-->
     <!--</bean>-->
 
-    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg ref="mongoClient"/>
-        <constructor-arg value="${mongo.dbname}"/>
-    </bean>
+    <beans profile="development">
+        <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+            <constructor-arg ref="mongoClient"/>
+            <constructor-arg value="${mongo.prodDbName}"/>
+        </bean>
+    </beans>
+
+    <beans profile="testing">
+        <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+            <constructor-arg ref="mongoClient"/>
+            <constructor-arg value="${mongo.testDbName}"/>
+        </bean>
+    </beans>
 
 </beans>

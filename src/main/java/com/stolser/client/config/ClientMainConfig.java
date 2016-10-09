@@ -1,7 +1,10 @@
 package com.stolser.client.config;
 
+import com.stolser.entity.Car;
+import com.stolser.entity.User;
 import org.springframework.context.annotation.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,4 +18,5 @@ public class ClientMainConfig {
     public ExecutorService newThreadPool() {
         return Executors.newFixedThreadPool(10);
     }
+
 }

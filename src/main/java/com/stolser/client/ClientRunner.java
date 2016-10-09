@@ -4,7 +4,9 @@ import com.stolser.client.config.ClientMainConfig;
 import com.stolser.entity.Car;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Lazy;
@@ -26,11 +28,11 @@ public class ClientRunner {
         ClientRunner runner = context.getBean("clientRunner", ClientRunner.class);
         displayBeans(context);
 
-        runner.makeCarsHitTheRoad();
+        runner.displayCars();
+//        runner.makeCarsHitTheRoad();
     }
 
     private void makeCarsHitTheRoad() {
-        displayCars();
         cars.forEach(car -> threadPool.submit(car::startJourney));
     }
 
@@ -53,4 +55,5 @@ public class ClientRunner {
         System.out.printf("There are %d beans in the Client context:\n", context.getBeanDefinitionCount());
         Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
     }
+
 }

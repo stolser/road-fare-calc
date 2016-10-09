@@ -4,13 +4,14 @@ import com.stolser.repository.RoadRepository;
 import com.stolser.repository.TrafficPostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanNameAware;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class Car {
+public class Car implements BeanNameAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(Car.class);
     private String plate;
     private User driver;
@@ -158,5 +159,10 @@ public class Car {
     @Override
     public String toString() {
         return String.format("Car{plate: '%s', driver: %s}", plate, driver);
+    }
+
+    @Override
+    public void setBeanName(String beanName) {
+        System.out.println("The Car bean's name is: " + beanName);
     }
 }

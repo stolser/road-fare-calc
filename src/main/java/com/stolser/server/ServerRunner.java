@@ -32,14 +32,12 @@ public class ServerRunner {
     private List<TrafficPost> postsPopulateDb;
     private List<Road> roadsPopulateDb;
 
-    private List<UserTracker> trackers;
-
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(ServerMainConfig.class);
         ServerRunner runner = context.getBean("serverRunner", ServerRunner.class);
         displayBeans(context);
 
-//        runner.setupDatabase(); todo: use only once, then MUST be comment!!!!!!!!!!!!
+        //runner.setupDatabase(); //todo: use only once, then MUST be commented!!!!!!!!!!!!
         runner.displayDataFromDb();
         runner.startServer();
 
@@ -53,7 +51,6 @@ public class ServerRunner {
         this.roadRepo = roadRepo;
         this.trafficPostRepo = trafficPostRepo;
         this.userTrackerRepo = userTrackerRepo;
-        this.trackers = new ArrayList<>();
     }
 
     @Autowired
